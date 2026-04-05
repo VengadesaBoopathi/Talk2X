@@ -1,0 +1,28 @@
+from datetime import datetime
+from sqlalchemy import String, Integer, DateTime, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
+
+class Base(DeclarativeBase):
+    pass
+
+class RedditUser(Base):
+    __tablename__ = "reddit_users"
+
+    username = mapped_column(String, primary_key=True)
+    last_scraped_at = mapped_column(DateTime, nullable=True, default=None)
+    total_posts = mapped_column(Integer, default=0, nullable=False)
+    total_comments = mapped_column(Integer, default=0, nullable=False)
+    scrape_status = mapped_column(String, default="idle", nullable=False)
+    created_at = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    errors = relationship("ScrapeError", back_populates="user")
+
+class ScrapeError(Base):
+    __tablename__ = "scrape_errors"
+
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username = mapped_column(String, ForeignKey("reddit_users.username"), nullable=False)
+    error_message = mapped_column(String, nullable=False)
+    occurred_at = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("RedditUser", back_populates="errors")
