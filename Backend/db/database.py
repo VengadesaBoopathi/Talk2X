@@ -2,6 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from dotenv import load_dotenv
+from .models import Base
 
 load_dotenv()
 
@@ -10,6 +11,7 @@ if DATABASE_URL is None:
     raise ValueError("DATABASE_URL is not set in environment variables")
 
 engine = create_engine(DATABASE_URL, echo=True)
+Base.metadata.create_all(bind = engine)
 
 SessionLocal = sessionmaker(
     bind=engine,

@@ -1,8 +1,7 @@
-# from FastAPI import app
-from httpx import AsyncClient
+import httpx
 
 REDDIT_BASE_URL = "https://www.reddit.com" 
-REDDIT_HEADERS = "User-Agent":"Talk2X/1.0"
+REDDIT_HEADERS ={"User-Agent":"Talk2X/1.0"}
 
 async def get_reddit_client() -> httpx.AsyncClient:
     return httpx.AsyncClient(
@@ -10,3 +9,4 @@ async def get_reddit_client() -> httpx.AsyncClient:
         headers = REDDIT_HEADERS,
         timeout = 30.0
     )
+

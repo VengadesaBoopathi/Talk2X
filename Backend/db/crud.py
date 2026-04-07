@@ -122,7 +122,7 @@ def should_rescrape(db: Session, username: str, max_age_hours: int = 1) -> bool:
         max_age_hours :how many hours of refresh should we do 
 
     """
-    user = get_user(db,username)
+    user = get_user(db,username.lower())
     if user is None:
         return True
     if user.scrape_status == "in_progress":
@@ -133,4 +133,3 @@ def should_rescrape(db: Session, username: str, max_age_hours: int = 1) -> bool:
         return True
     
     return False
-    

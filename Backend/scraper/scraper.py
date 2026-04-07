@@ -1,6 +1,8 @@
 import asyncio
 import httpx
-from .crud import get_or_create_user,get_user,should_rescrape,update_scrape_complete,update_scrape_status,log_scrape_error
+from ..db.crud import get_or_create_user,get_user,should_rescrape,update_scrape_complete,update_scrape_status,log_scrape_error
+from sqlalchemy.orm import Session
+from .reddit_client import get_reddit_client
 
 async def scrape_user(db: Session, username: str) -> dict:
     """
@@ -26,6 +28,7 @@ async def scrape_user(db: Session, username: str) -> dict:
                 fetch_all_content(client,username,"comments",after_timestamp),
                 fetch_all_content(client,username,"submitted",after_timestamp)
             ) 
+            await ingest_user_content(username,posts,comments)
             update_scrape_complete(db,username,len(posts),len(comments))
         return {"posts": len(posts), "comments": len(comments), "skipped": False}
     except Exception as error:
@@ -65,8 +68,6 @@ async def fetch_all_content(client: httpx.AsyncClient,username: str,content_type
 
         for item in items:
             data = item["data"]
-            
-            # you write the timestamp filter here
             if after_timestamp is not None and data["created_utc"] <= after_timestamp: 
                 continue
             
@@ -81,9 +82,7 @@ async def fetch_all_content(client: httpx.AsyncClient,username: str,content_type
             })
 
         after_cursor = response["data"].get("after")
-        
-        # you write the stop condition here
-        # if after_cursor is None: break
+
         if not after_cursor:
             break
     return results
