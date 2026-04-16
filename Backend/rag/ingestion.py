@@ -28,3 +28,5 @@ async def ingest_user_content(username:str,posts:list[dict],comments:list[dict])
 
     collection = get_or_create_collection(username)
     add_documents(collection,username,texts,metadatas)
+
+

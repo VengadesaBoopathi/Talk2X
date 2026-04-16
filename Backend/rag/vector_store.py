@@ -4,15 +4,29 @@ import re
 from langchain_chroma import Chroma
 from langchain_core.embeddings import Embeddings
 from .embeddings import embed_query, embed_documents
-import nest_asyncio
-nest_asyncio.apply()
+import concurrent.futures
+import os
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load credentials and configure Gemini
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 class GeminiEmbeddings(Embeddings):
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        return asyncio.run(embed_documents(texts))
+        result = genai.embed_content(
+            model="models/gemini-embedding-001",
+            content=texts
+        )
+        return result["embedding"]
     
     def embed_query(self, text: str) -> list[float]:
-        return asyncio.run(embed_query(text))
+        result = genai.embed_content(
+            model="models/gemini-embedding-001",
+            content=text
+        )
+        return result["embedding"]
 
 def get_or_create_collection(username: str) -> Chroma:
     """
@@ -52,8 +66,8 @@ def add_documents(
         return
     
     ids = [
-        hashlib.md5(f"{username}:{chunk}".encode()).hexdigest()
-        for chunk in chunks
+        hashlib.md5(f"{username}:{i}:{chunk}".encode()).hexdigest()
+        for i , chunk in enumerate(chunks)
     ]
     collection.add_texts(
         texts=chunks,

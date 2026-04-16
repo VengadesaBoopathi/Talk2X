@@ -2,7 +2,20 @@ import asyncio
 import httpx
 from ..db.crud import get_or_create_user,get_user,should_rescrape,update_scrape_complete,update_scrape_status,log_scrape_error
 from sqlalchemy.orm import Session
-from .reddit_client import get_reddit_client
+from .reddit_client import REDDIT_BASE_URL,REDDIT_HEADERS
+from ..db.database import get_db,SessionLocal
+from ..rag.ingestion import ingest_user_content
+
+async def scrape_user_background(username:str)->None:
+    db = SessionLocal()
+    try:
+        await scrape_user(db,username)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise
+    finally:
+        db.close()
 
 async def scrape_user(db: Session, username: str) -> dict:
     """
@@ -23,7 +36,11 @@ async def scrape_user(db: Session, username: str) -> dict:
 
     try:
         update_scrape_status(db,username,"in_progress")
-        async with get_reddit_client() as client:
+        async with httpx.AsyncClient(
+            base_url=REDDIT_BASE_URL,
+            headers=REDDIT_HEADERS,
+            timeout=30.0
+        ) as client:
             comments,posts  = await asyncio.gather(
                 fetch_all_content(client,username,"comments",after_timestamp),
                 fetch_all_content(client,username,"submitted",after_timestamp)

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+httpx
+pydantic
+python-dotenv
+langchain
+langchain-core
+langchain-chroma
+langchain-text-splitters
+google-generativeai
+nest-asyncio
+chromadb

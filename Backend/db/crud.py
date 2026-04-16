@@ -133,3 +133,4 @@ def should_rescrape(db: Session, username: str, max_age_hours: int = 1) -> bool:
         return True
     
     return False
+    
