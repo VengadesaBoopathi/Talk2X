@@ -1,4 +1,4 @@
-from ..scraper/scraper import fetch_page
+from ..scraper.scraper import fetch_page
 
 async def scrape_subreddit_posts(
     client:httpx.AsyncClient,
@@ -12,20 +12,57 @@ async def scrape_subreddit_posts(
         "sort":"top",
         "limit":limit
     }
-    response = fetch_page(client,url,params)
+    response = await fetch_page(client,url,params)
 
     items = response["data"]["children"]
-    result = {}
+    result = []
     for item in items:
         data = item["data"]
-        if data["author"]=="deleted" or data["author"] = None or data["author"] == "" or data[score] < 1:
+        if (data["author"] == "[deleted]"
+        or data["author"] is None 
+        or data["author"] == "" 
+        or data["score"] < 1):
             continue
-        item[data["post"]]
-    return results
+        temp ={}
 
+        temp["author"] = data["author"]
+        temp["text"] = data.get("selftext","") or data.get("body","")
+        temp["title"] = data["title"]
+        temp["url"] = f"https://reddit.com{data.get('permalink','')}"
+        temp["subreddit"] = data["subreddit"]
+        temp["score"] = data["score"]
+        temp["created_utc"] = data["created_utc"]
+
+        result.append(temp)
+    return result
 
 async def fetch_post_comments(
     client:httpx.AsyncClient,
     subreddit:str,
-    post_id:str
-)->list[str]:
+    post_id:str,
+    post_title:str
+)->list[dict]:
+    url = f"/r/{subreddit}/comments/{post_id}.json"
+    response = await fetch_page(client,url,{})
+
+    items = response[1]["data"]["children"]
+    result =[]
+    for item in items:
+        data = item["data"]
+        if (data["author"] == "[deleted]"
+        or data["author"] is None 
+        or data["author"] == "" 
+        or data["score"] < 1):
+            continue
+        temp ={}
+
+        temp["author"] = data["author"]
+        temp["text"] = data.get("selftext","") or data.get("body","")
+        temp["title"] = post_title
+        temp["url"] = f"https://reddit.com{data.get('permalink','')}"
+        temp["score"] = data["score"]
+        temp["created_utc"] = data["created_utc"]
+
+        result.append(temp)
+    return result
+
