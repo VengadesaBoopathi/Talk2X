@@ -1,5 +1,5 @@
 from ..scraper.scraper import fetch_page
-
+import httpx
 async def scrape_subreddit_posts(
     client:httpx.AsyncClient,
     subreddit:str,

@@ -25,7 +25,8 @@ async def filter_relevant_content(content:list[dict],expertise_signals:list[str]
         ]
         avg_score = sum(scores) / len(scores)
         if avg_score >= threshold:
-            filtered_post.append(content[j])
+            post_with_score = {**content[j],"avg_similarity":avg_score}
+            filtered_post.append(post_with_score)
     
     return group_by_author(filtered_post)
     
