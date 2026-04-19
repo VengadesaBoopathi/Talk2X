@@ -36,6 +36,7 @@ async def embed_query(text: str) -> list[float]:
 
 async def embed_single(text: str) -> list[float]:
     async with EMBEDDING_SEMAPHORE:
+        await asyncio.sleep(0.1)
         return await embed_query(text)
 
 async def embed_documents(texts: list[str]) -> list[list[float]]:

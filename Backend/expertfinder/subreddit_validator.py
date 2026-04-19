@@ -3,7 +3,7 @@ import httpx
 from ..rag.embeddings import embed_query
 from ..rag.embeddings import embed_documents
 
-async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0.4)->list[str]:
+async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0.2)->list[str]:
     valid_subreddits = []
     descriptions = []
     result =[]
@@ -25,8 +25,10 @@ async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],quer
     subreddit_embeddings = await embed_documents(descriptions)
     query_embedding = await embed_query(query)
 
-    for i,subreddit_embedding in enumerate(subreddit_embeddings):
-        if cosine_similarity(subreddit_embedding,query_embedding) >= threshold:
+    for i, subreddit_embedding in enumerate(subreddit_embeddings):
+        score = cosine_similarity(subreddit_embedding, query_embedding)
+        print(f"SUBREDDIT: {valid_subreddits[i]} SCORE: {score}")
+        if score >= threshold:
             result.append(valid_subreddits[i])
     return result
 

@@ -4,7 +4,7 @@ async def scrape_subreddit_posts(
     client:httpx.AsyncClient,
     subreddit:str,
     topic:str,
-    limit:int = 50
+    limit:int = 5
 )->list[dict]:
     url = f"/r/{subreddit}/search.json"
     params = {
@@ -26,7 +26,10 @@ async def scrape_subreddit_posts(
         temp ={}
 
         temp["author"] = data["author"]
-        temp["text"] = data.get("selftext","") or data.get("body","")
+        text = data.get("selftext", "") or data.get("body", "")
+        if not text.strip():
+            continue
+        temp["text"] = text
         temp["title"] = data["title"]
         temp["url"] = f"https://reddit.com{data.get('permalink','')}"
         temp["subreddit"] = data["subreddit"]
@@ -46,7 +49,7 @@ async def fetch_post_comments(
     url = f"/r/{subreddit}/comments/{post_id}.json"
     response = await fetch_page(client,url,{})
 
-    items = response[1]["data"]["children"]
+    items = response[1]["data"]["children"][:5]
     result =[]
     for item in items:
         if item.get("kind") != "t1":
@@ -60,7 +63,10 @@ async def fetch_post_comments(
         temp ={}
 
         temp["author"] = data["author"]
-        temp["text"] = data.get("selftext","") or data.get("body","")
+        text = data.get("selftext", "") or data.get("body", "")
+        if not text.strip():
+            continue
+        temp["text"] = text
         temp["title"] = post_title
         temp["url"] = f"https://reddit.com{data.get('permalink','')}"
         temp["score"] = data["score"]

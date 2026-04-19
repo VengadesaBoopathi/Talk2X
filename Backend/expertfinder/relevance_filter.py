@@ -14,7 +14,9 @@ def group_by_author(content: list[dict]) -> dict[str, list[dict]]:
 async def filter_relevant_content(content:list[dict],expertise_signals:list[str],threshold:float =0.3)-> dict[str, list[dict]]:
     if not content or not expertise_signals:
         return {}
-
+    content = [post for post in content if post.get("text", "").strip()]
+    if not content:
+        return {}
     filtered_post =[]
     content_texts = [post["text"] for post in content]
     expertise_signals_embeddings,content_embeddings = await asyncio.gather(embed_documents(expertise_signals),embed_documents(content_texts))
