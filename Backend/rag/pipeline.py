@@ -1,4 +1,4 @@
-from .retriever import retrieve
+from .retreiver import retrieve
 import google.generativeai as genai
 from typing import AsyncGenerator
 import os

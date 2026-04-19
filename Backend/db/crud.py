@@ -1,4 +1,4 @@
-from .models import RedditUser, ScrapeError
+from .model import RedditUser, ScrapeError
 from sqlalchemy.orm import Session
 from datetime import datetime
 

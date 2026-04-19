@@ -2,10 +2,9 @@ from .query_understanding import understand_query
 from .signal_b import run_signal_b
 from .subreddit_validator import validate_subreddits
 from .relevance_filter import filter_relevant_content
-from .subreddit_scraper import fetch_subreddit_content,fetch_post_comments, scrape_subreddit_posts
+from .subreddit_scraper import fetch_post_comments, scrape_subreddit_posts
 from .scorer import score_candidates
-import httpx
-from .profile_generator import generate_expert_profile, generate_profile
+from .profile_generator import generate_expert_profile
 from ..scraper.reddit_client import get_reddit_client
 import asyncio
 

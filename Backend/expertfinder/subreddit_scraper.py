@@ -32,6 +32,7 @@ async def scrape_subreddit_posts(
         temp["subreddit"] = data["subreddit"]
         temp["score"] = data["score"]
         temp["created_utc"] = data["created_utc"]
+        temp["id"] = data["id"]
 
         result.append(temp)
     return result
@@ -48,6 +49,8 @@ async def fetch_post_comments(
     items = response[1]["data"]["children"]
     result =[]
     for item in items:
+        if item.get("kind") != "t1":
+            continue
         data = item["data"]
         if (data["author"] == "[deleted]"
         or data["author"] is None 
@@ -62,6 +65,7 @@ async def fetch_post_comments(
         temp["url"] = f"https://reddit.com{data.get('permalink','')}"
         temp["score"] = data["score"]
         temp["created_utc"] = data["created_utc"]
+        temp["id"] = data["id"]
 
         result.append(temp)
     return result

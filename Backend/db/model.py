@@ -26,3 +26,11 @@ class ScrapeError(Base):
     occurred_at = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     user = relationship("RedditUser", back_populates="errors")
+
+
+class ExpertDiscoveryCache(Base):
+    __tablename__ = "expert_discovery_cache"
+    
+    query = mapped_column(String, primary_key=True)
+    result_json = mapped_column(String, nullable=False)
+    created_at = mapped_column(DateTime, default=datetime.utcnow)

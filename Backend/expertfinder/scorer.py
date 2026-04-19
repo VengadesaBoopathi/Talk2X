@@ -27,7 +27,7 @@ async def score_candidates(grouped_candidates: dict[str, list[dict]]) -> list[di
     
     for candidate in candidates:
         normalized_c = candidate["signal_c"] / max_c if max_c > 0 else 0
-        candidate["normalized_c"] = normalized_c
+        candidate["normalized_signal_c"] = normalized_c
         candidate["preliminary_score"] = (0.35 * candidate["signal_a"]) + (0.25 * normalized_c)
     
     candidates.sort(key=lambda x: x["preliminary_score"], reverse=True)

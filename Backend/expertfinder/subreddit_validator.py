@@ -22,13 +22,13 @@ async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],quer
         except httpx.HTTPStatusError:
             continue
 
-        subreddit_embeddings = await embed_documents(descriptions)
-        query_embedding = await embed_query(query)
+    subreddit_embeddings = await embed_documents(descriptions)
+    query_embedding = await embed_query(query)
 
-        for i,subreddit_embedding in enumerate(subreddit_embeddings):
-            if cosine_similarity(subreddit_embedding,query_embedding) >= threshold:
-                result.append(valid_subreddits[i])
-            return result
+    for i,subreddit_embedding in enumerate(subreddit_embeddings):
+        if cosine_similarity(subreddit_embedding,query_embedding) >= threshold:
+            result.append(valid_subreddits[i])
+    return result
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
     dot_product = sum(x * y for x, y in zip(a, b))
