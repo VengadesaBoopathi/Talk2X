@@ -11,7 +11,7 @@ if GEMINI_API_KEY is None:
     raise ValueError("GEMINI_API_KEY not set in environment")
 
 genai.configure(api_key=GEMINI_API_KEY)
-GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
+GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 async def generate_expert_profile(candidate: dict) -> dict:
     top_posts = sorted(candidate["posts"], key=lambda x: x["avg_similarity"], reverse=True)[:5]

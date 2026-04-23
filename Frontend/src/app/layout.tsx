@@ -3,17 +3,17 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'TalkToX — Chat with any Reddit user',
-  description: 'AI-powered conversations grounded in real Reddit post history',
+  description: 'Enter a Reddit username. We index their posts. You chat with an AI grounded in exactly what they wrote.',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="noise">{children}</body>
+    <html lang="en" data-theme="light">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body>{children}</body>
     </html>
   )
 }

@@ -39,7 +39,7 @@ async def get_status(username:str,db:Session  = Depends(get_db))->dict:
     return {
                 "username":reddit_user.username,
                 "scrape_status":reddit_user.scrape_status,
-                "total_post":reddit_user.total_posts,
+                "total_posts":reddit_user.total_posts,
                 "total_comments":reddit_user.total_comments,
                 "last_scraped_at":reddit_user.last_scraped_at
             }

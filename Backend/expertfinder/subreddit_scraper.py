@@ -4,7 +4,7 @@ async def scrape_subreddit_posts(
     client:httpx.AsyncClient,
     subreddit:str,
     topic:str,
-    limit:int = 5
+    limit:int = 10
 )->list[dict]:
     url = f"/r/{subreddit}/search.json"
     params = {

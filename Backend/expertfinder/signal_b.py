@@ -10,7 +10,7 @@ if GEMINI_API_KEY is None:
     raise ValueError("GEMINI_API_KEY not set in environment")
 
 genai.configure(api_key=GEMINI_API_KEY)
-GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
+GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 
 async def evaluate_single_candidate(candidate: dict) -> dict:

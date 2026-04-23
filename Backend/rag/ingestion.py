@@ -4,7 +4,7 @@ from .vector_store import get_or_create_collection,add_documents
 async def ingest_user_content(username:str,posts:list[dict],comments:list[dict])->None:
     """
     creates chunks and add it to vector db chroma
-    """
+    """ 
     all_content = posts+comments
     all_chunks = []
 

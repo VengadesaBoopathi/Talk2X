@@ -10,7 +10,7 @@ if GEMINI_API_KEY is None:
     raise ValueError("GEMINI_API_KEY not set in environment")
 
 genai.configure(api_key=GEMINI_API_KEY)
-GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
+GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 async def understand_query(query: str)->dict:
     system_prompt = f"""
@@ -30,7 +30,7 @@ async def understand_query(query: str)->dict:
     - expertise_signals must be specific technical terms, not generic phrases like 'deep knowledge'
     - relevant_subreddits must be real active Reddit communities
     - related_concepts must go beyond surface level — include niche sub-topics
-
+    - "You must respond ONLY with raw, valid JSON. Do not include any conversational text. Do not enclose the output in Markdown code blocks. Do not use backticks (```) or the word 'json'."
     Query: {query}
     """
     result = await GEMINI_MODEL.generate_content_async(system_prompt)

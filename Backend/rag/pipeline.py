@@ -11,7 +11,7 @@ if GEMINI_API_KEY is None:
     raise ValueError("GEMINI_API_KEY not set in environment")
 
 genai.configure(api_key=GEMINI_API_KEY)
-GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash")
+GEMINI_MODEL = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 async def run_rag_pipeline(username: str,query: str,chat_history: list[dict]) -> AsyncGenerator[str, None]:
     top_similar_chunks = await retrieve(username,query)

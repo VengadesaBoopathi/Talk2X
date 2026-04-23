@@ -3,7 +3,7 @@ import httpx
 from ..rag.embeddings import embed_query
 from ..rag.embeddings import embed_documents
 
-async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0.2)->list[str]:
+async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0)->list[str]:
     valid_subreddits = []
     descriptions = []
     result =[]
@@ -12,15 +12,38 @@ async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],quer
         try:
             url = f"/r/{subreddit}/about.json"
             response = await fetch_page(client, url, {})
-            description = response["data"].get("public_description", "")
+            
+            print(f"DEBUG {subreddit}: Full response type: {type(response)}")
+            
+            print(f"RAW RESPONSE {subreddit}: {response['data'].get('public_description', 'EMPTY')} | {response['data'].get('title', 'EMPTY')}")
+            
+            description = (response["data"].get("public_description", "") or 
+                           response["data"].get("description", "") or 
+                           response["data"].get("display_name", ""))
             title = response["data"].get("title", "")
             text = f"{title} {description}".strip()
+            
+            print(f"TEXT FOR {subreddit}: '{text}'")
+            
             if not text:
                 continue
+                
             valid_subreddits.append(subreddit)
             descriptions.append(text)
-        except httpx.HTTPStatusError:
+
+        except httpx.HTTPStatusError as e:
+            print(f"HTTP ERROR for {subreddit}: {e.response.status_code} - {e.response.text}")
             continue
+        except KeyError as e:
+            print(f"KEY ERROR for {subreddit}: Missing key {e} in response: {response}")
+            continue
+        except Exception as e:
+            # Catch any other unexpected errors (like TypeErrors)
+            print(f"UNEXPECTED ERROR for {subreddit}: {type(e).__name__} - {e}")
+            continue
+            
+    print(f"VALID SUBREDDITS BEFORE EMBEDDING: {valid_subreddits}")
+    print(f"DESCRIPTIONS COUNT: {len(descriptions)}")
 
     subreddit_embeddings = await embed_documents(descriptions)
     query_embedding = await embed_query(query)

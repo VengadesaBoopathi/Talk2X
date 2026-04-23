@@ -134,7 +134,7 @@ async def fetch_page(client: httpx.AsyncClient,url: str,params: dict) -> dict:
                         request=response.request,
                         response=response
                     )
-                wait = 2 ** attempt
+                wait = 3 ** attempt
                 await asyncio.sleep(wait)
                 continue
             elif response.status_code == 404:
@@ -156,6 +156,6 @@ async def fetch_page(client: httpx.AsyncClient,url: str,params: dict) -> dict:
         except httpx.RequestError as error:
             if attempt == max_retries - 1:
                 raise
-            await asyncio.sleep(2 ** attempt)
+            await asyncio.sleep(3 ** attempt)
 
     raise httpx.RequestError("Max retries exceeded with no successful response")

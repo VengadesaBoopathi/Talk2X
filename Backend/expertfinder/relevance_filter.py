@@ -11,6 +11,15 @@ def group_by_author(content: list[dict]) -> dict[str, list[dict]]:
         result[author].append(post)
     return result
 
+async def embed_in_batches(texts: list[str],batch_size:int=20)->list[list[float]]:
+    results=[]
+    for i in range(0,len(texts),batch_size):
+        batch = texts[i:i+batch_size]
+        embeddings  = await embed_documents(batch)
+        results.extend(embeddings)
+        await asyncio.sleep(3)
+    return results
+
 async def filter_relevant_content(content:list[dict],expertise_signals:list[str],threshold:float =0.3)-> dict[str, list[dict]]:
     if not content or not expertise_signals:
         return {}
@@ -19,7 +28,7 @@ async def filter_relevant_content(content:list[dict],expertise_signals:list[str]
         return {}
     filtered_post =[]
     content_texts = [post["text"] for post in content]
-    expertise_signals_embeddings,content_embeddings = await asyncio.gather(embed_documents(expertise_signals),embed_documents(content_texts))
+    expertise_signals_embeddings,content_embeddings = await asyncio.gather(embed_documents(expertise_signals),embed_in_batches(content_texts))
     
     for j, post_embedding in enumerate(content_embeddings):
         scores = [
