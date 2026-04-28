@@ -10,7 +10,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL is None:
     raise ValueError("DATABASE_URL is not set in environment variables")
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(
+    DATABASE_URL, 
+    echo=True,
+    connect_args={
+        "check_same_thread":False,
+        "timeout":30
+    })
 Base.metadata.create_all(bind = engine)
 
 SessionLocal = sessionmaker(

@@ -3,7 +3,7 @@ import httpx
 from ..rag.embeddings import embed_query
 from ..rag.embeddings import embed_documents
 
-async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0)->list[str]:
+async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],query:str,threshold:float=0.55)->list[str]:
     valid_subreddits = []
     descriptions = []
     result =[]
@@ -38,7 +38,6 @@ async def validate_subreddits(client:httpx.AsyncClient,subreddits:list[str],quer
             print(f"KEY ERROR for {subreddit}: Missing key {e} in response: {response}")
             continue
         except Exception as e:
-            # Catch any other unexpected errors (like TypeErrors)
             print(f"UNEXPECTED ERROR for {subreddit}: {type(e).__name__} - {e}")
             continue
             

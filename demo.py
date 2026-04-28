@@ -8,14 +8,14 @@ for m in genai.list_models():
 
 
 
-{
-  "query": "what does this user talks about",
-  "chat_history": [
-    {
-      "role":"user","content":"previous question"
-    },
-    {
-      "role":"assistant","content":"previous answer"
-    }
-  ]
-}
+# {
+#   "query": "what does this user talks about",
+#   "chat_history": [
+#     {
+#       "role":"user","content":"previous question"
+#     },
+#     {
+#       "role":"assistant","content":"previous answer"
+#     }
+#   ]
+# }

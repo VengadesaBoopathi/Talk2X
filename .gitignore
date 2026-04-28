@@ -1,4 +1,21 @@
-# Ignore all env files
-.env*
-# Ignore node modules
-node_modules/       
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+
+# --- Next.js / Node.js ---
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Environment variables
+.env

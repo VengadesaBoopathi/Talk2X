@@ -17,13 +17,19 @@ async def embed_in_batches(texts: list[str],batch_size:int=20)->list[list[float]
         batch = texts[i:i+batch_size]
         embeddings  = await embed_documents(batch)
         results.extend(embeddings)
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
     return results
 
-async def filter_relevant_content(content:list[dict],expertise_signals:list[str],threshold:float =0.3)-> dict[str, list[dict]]:
+async def filter_relevant_content(content:list[dict],expertise_signals:list[str],threshold:float =0.45)-> dict[str, list[dict]]:
     if not content or not expertise_signals:
         return {}
     content = [post for post in content if post.get("text", "").strip()]
+    content = [post for post in content if not any(
+        keyword in post.get("author", "").lower()
+        for keyword in ["bot", "moderator", "mod", "auto", "spam", "admin"]
+    )]
+    content = [post for post in content if len(post.get("text", "").split()) >= 30]
+    content = content[:150]
     if not content:
         return {}
     filtered_post =[]

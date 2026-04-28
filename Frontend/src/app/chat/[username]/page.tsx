@@ -268,9 +268,12 @@ export default function ChatPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  
   function renderContent(content: string) {
-    // Remove Reddit URLs from visible text (they appear as citation chips)
-    return content.replace(/https?:\/\/reddit\.com[^\s\)"']+/g, '').trim()
+    const withoutSources = content.replace(/\n*Sources:\n[\s\S]*/gi, '').trim()
+    const withoutUrls = withoutSources.replace(/https?:\/\/reddit\.com[^\s\)"']+/g, '').trim()
+    const withoutEmptyParens = withoutUrls.replace(/\(\s*\)/g, '').trim()
+    return withoutEmptyParens
   }
 
   const doneScraping = scrapeSteps.every(s => s.status === 'done')
@@ -654,7 +657,12 @@ export default function ChatPage() {
                 )}
 
                 {messages.map((msg, i) => {
-                  const cleanContent = renderContent(msg.content)
+                  const displayContent = isStreaming && i === messages.length - 1
+                    ? msg.content  // show raw during streaming
+                      .replace(/https?:\/\/reddit\.com[^\s\)"']+/g, '')
+                      .replace(/\(\s*\)/g, '')
+                    : renderContent(msg.content)  // clean fully when done
+
                   return (
                     <div
                       key={i}
@@ -686,7 +694,7 @@ export default function ChatPage() {
                         fontFamily: 'var(--font-body)',
                         fontWeight: 400,
                       }}>
-                        {cleanContent || (isStreaming && i === messages.length - 1 && msg.role === 'assistant' ? '' : '—')}
+                        {displayContent || (isStreaming && i === messages.length - 1 && msg.role === 'assistant' ? '' : '—')}
                         {isStreaming && i === messages.length - 1 && msg.role === 'assistant' && (
                           <span style={{
                             display: 'inline-block', width: '2px', height: '15px',

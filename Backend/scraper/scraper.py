@@ -98,6 +98,9 @@ async def fetch_all_content(client: httpx.AsyncClient,username: str,content_type
                 "score": data.get("score", 0)
             })
 
+        if len(results)>=300:
+                break
+
         after_cursor = response["data"].get("after")
 
         if not after_cursor:

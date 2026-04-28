@@ -3,6 +3,7 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 import json
+import re
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -36,7 +37,12 @@ async def understand_query(query: str)->dict:
     result = await GEMINI_MODEL.generate_content_async(system_prompt)
 
     try:
-        parsed = json.loads(result.text)
+        text = result.text.strip()
+        print(f"Response:{repr(text)}" )
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        parsed = json.loads(text)
+        # parsed = json.loads(result.text)
         return parsed
     except json.JSONDecodeError:
         raise ValueError(f"Gemini returned invalid JSON {result.text}")
