@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from .api.routes import router
 from .api.expert_router import router as expert_router
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 
 app = FastAPI(title ="Talk2X",version="1.0.0")

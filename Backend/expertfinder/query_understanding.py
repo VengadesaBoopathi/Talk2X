@@ -18,7 +18,8 @@ async def understand_query(query: str)->dict:
     You are an expert analyst identifying genuine domain expertise on Reddit.
 
     Given a topic query, return a JSON object with exactly these fields:
-
+    When a user provides a query, analyze ALL keywords in the query and identify ALL relevant categories of results. Do not over-focus on a single interpretation.
+    
     {{
         "core_topic": "canonical name of the topic",
         "related_concepts": ["list of deep sub-topics that only genuine experts discuss"],
@@ -42,7 +43,6 @@ async def understand_query(query: str)->dict:
         text = re.sub(r'^```(?:json)?\s*', '', text)
         text = re.sub(r'\s*```$', '', text)
         parsed = json.loads(text)
-        # parsed = json.loads(result.text)
         return parsed
     except json.JSONDecodeError:
         raise ValueError(f"Gemini returned invalid JSON {result.text}")

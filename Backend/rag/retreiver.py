@@ -1,6 +1,6 @@
-from .vector_store import get_or_create_collection,similarity_search
+from .vector_store import get_or_create_collection, similarity_search
 
-async def retrieve(username: str,query: str,n_results: int = 5) -> list[dict]:
+async def retrieve(username: str, query: str, n_results: int = 5) -> list[dict]:
     """
     Retrieves most relevant chunks for a query from a user's vector store.
 
@@ -12,6 +12,6 @@ async def retrieve(username: str,query: str,n_results: int = 5) -> list[dict]:
     Returns:
         List of dicts with text, score, url, subreddit, created_utc
     """
-    vector_embeddings = get_or_create_collection(username)
-    results = similarity_search(vector_embeddings,query,n_results)
+    collection = get_or_create_collection(username)
+    results = similarity_search(collection, query, n_results)
     return results
